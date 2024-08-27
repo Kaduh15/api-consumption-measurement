@@ -6,10 +6,10 @@ import YAML from 'yamljs'
 
 import 'express-async-errors'
 
+import { env } from '@/config/env'
 import errorMiddleware from '@/middlewares/error.middleware'
 import loggerMiddleware from '@/middlewares/logger.middleware'
-
-import { env } from './config/env'
+import { updateImageRoute } from '@/routes'
 
 const swaggerPath = path.resolve(__dirname, '../docs/swagger.yaml')
 const swaggerDocument = YAML.load(swaggerPath)
@@ -28,18 +28,24 @@ class App {
     this.app.use(
       cors({
         origin: '*',
-        methods: ['GET', 'POST', 'PUT', 'DELETE'],
+        methods: ['GET', 'POST', 'PUT', 'PATCH', 'DELETE'],
         allowedHeaders: ['Content-Type', 'Authorization'],
         credentials: true,
       }),
     )
-    this.app.use(express.json())
+    this.app.use(
+      express.json({
+        limit: '10mb',
+      }),
+    )
     this.app.use(loggerMiddleware)
     this.app.use('/docs', swaggerUi.serve, swaggerUi.setup(swaggerDocument))
   }
 
   private routes(): void {
     this.app.get('/docs', swaggerUi.setup(swaggerDocument))
+
+    this.app.use('/api', updateImageRoute)
 
     this.app.use('*', (req, res) => {
       const url = env.URL_DEPLOY || req.protocol + '://' + req.get('host')
