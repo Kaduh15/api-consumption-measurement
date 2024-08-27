@@ -1,0 +1,215 @@
+openapi: 3.0.0
+info:
+  title: Medição de Consumo API
+  description: API para gerenciar leituras de consumo de água e gás.
+  version: 1.0.0
+servers:
+  - url: http://localhost:3000/api
+
+paths:
+  /upload:
+    post:
+      summary: Recebe uma imagem e retorna a medição lida pela API do Google Gemini.
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              type: object
+              properties:
+                image:
+                  type: string
+                  format: base64
+                  description: Imagem em base64.
+                customer_code:
+                  type: string
+                  description: Código do cliente.
+                measure_datetime:
+                  type: string
+                  format: date-time
+                  description: Data e hora da leitura.
+                measure_type:
+                  type: string
+                  enum: [WATER, GAS]
+                  description: Tipo de leitura, pode ser "WATER" ou "GAS".
+              required:
+                - image
+                - customer_code
+                - measure_datetime
+                - measure_type
+      responses:
+        '200':
+          description: Operação realizada com sucesso.
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  image_url:
+                    type: string
+                    description: Link temporário para a imagem.
+                  measure_value:
+                    type: integer
+                    description: Valor numérico reconhecido pela LLM.
+                  measure_uuid:
+                    type: string
+                    description: GUID da medição.
+        '400':
+          description: Dados fornecidos são inválidos.
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  error_code:
+                    type: string
+                    example: INVALID_DATA
+                  error_description:
+                    type: string
+        '409':
+          description: Já existe uma leitura para este tipo no mês atual.
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  error_code:
+                    type: string
+                    example: DOUBLE_REPORT
+                  error_description:
+                    type: string
+
+  /confirm:
+    patch:
+      summary: Confirma ou corrige o valor lido pelo LLM.
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              type: object
+              properties:
+                measure_uuid:
+                  type: string
+                  description: GUID da medição.
+                confirmed_value:
+                  type: integer
+                  description: Valor confirmado da medição.
+              required:
+                - measure_uuid
+                - confirmed_value
+      responses:
+        '200':
+          description: Operação realizada com sucesso.
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  success:
+                    type: boolean
+                    example: true
+        '400':
+          description: Dados fornecidos são inválidos.
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  error_code:
+                    type: string
+                    example: INVALID_DATA
+                  error_description:
+                    type: string
+        '404':
+          description: Leitura não encontrada.
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  error_code:
+                    type: string
+                    example: MEASURE_NOT_FOUND
+                  error_description:
+                    type: string
+        '409':
+          description: Leitura já confirmada.
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  error_code:
+                    type: string
+                    example: CONFIRMATION_DUPLICATE
+                  error_description:
+                    type: string
+
+  /{customer_code}/list:
+    get:
+      summary: Lista as medições realizadas por um cliente específico.
+      parameters:
+        - in: path
+          name: customer_code
+          required: true
+          schema:
+            type: string
+          description: Código do cliente.
+        - in: query
+          name: measure_type
+          required: false
+          schema:
+            type: string
+            enum: [WATER, GAS]
+          description: Filtra as medições por tipo (WATER ou GAS).
+      responses:
+        '200':
+          description: Operação realizada com sucesso.
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  customer_code:
+                    type: string
+                  measures:
+                    type: array
+                    items:
+                      type: object
+                      properties:
+                        measure_uuid:
+                          type: string
+                        measure_datetime:
+                          type: string
+                          format: date-time
+                        measure_type:
+                          type: string
+                        has_confirmed:
+                          type: boolean
+                        image_url:
+                          type: string
+        '400':
+          description: Tipo de medição inválido.
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  error_code:
+                    type: string
+                    example: INVALID_TYPE
+                  error_description:
+                    type: string
+        '404':
+          description: Nenhum registro encontrado.
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  error_code:
+                    type: string
+                    example: MEASURES_NOT_FOUND
+                  error_description:
+                    type: string
