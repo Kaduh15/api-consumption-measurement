@@ -1,0 +1,17 @@
+services:
+  api:
+    build: .
+    container_name: api
+    ports:
+      - 3000:3000
+    environment:
+      - PORT=3000
+      - GEMINI_API_KEY=${GEMINI_API_KEY}
+      - URL_DEPLOY=${URL_DEPLOY:-http://localhost:3000}
+    networks:
+      - api_net
+    restart: always
+
+networks:
+  api_net:
+    driver: bridge
