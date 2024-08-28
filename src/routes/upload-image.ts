@@ -4,6 +4,7 @@ import { z } from 'zod'
 import { env } from '@/config/env'
 import { model } from '@/libs/google-ai'
 import { db } from '@/libs/prisma'
+import { getStartAndEndDate } from '@/utils/get-start-and-end-date'
 import { HttpStatus } from '@/utils/http-status'
 import { parseJsonText } from '@/utils/parse-json-text'
 
@@ -40,9 +41,14 @@ updateImageRoute.post('/upload', async (req, res) => {
 
   const { image, measureType, measureDatetime, customerCode } = payload.data
 
+  const { startDate, endDate } = getStartAndEndDate(measureDatetime)
+
   const hasMeasureInDate = await db.measure.findFirst({
     where: {
-      measureDatetime,
+      measureDatetime: {
+        gte: startDate,
+        lte: endDate,
+      },
       measureType,
       customerCode,
     },

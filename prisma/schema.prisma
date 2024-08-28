@@ -17,7 +17,7 @@ datasource db {
 model Measure {
   id              String      @id @default(uuid()) @map("id")
   measureValue    Int         @map("measure_value")
-  measureDatetime String      @map("measure_datetime")
+  measureDatetime DateTime    @map("measure_datetime")
   measureType     MeasureType @map("measure_type")
   customerCode    String      @map("customer_code")
   hasConfirmed    Boolean     @default(false) @map("has_confirmed")
