@@ -229,11 +229,11 @@ GET /12345/list
 ```
 
 ### **Checklist da Rota GET /<customer_code>/list**:
-- [ ] Receber o `customer_code` como parâmetro da URL.
-- [ ] Consultar o banco de dados para buscar todas as leituras associadas ao `customer_code`.
-- [ ] Retornar as leituras em formato de array com detalhes como `measure_datetime`, `measure_value`, `measure_type`, `measure_uuid` e status de confirmação.
-- [ ] Tratar os casos de erros (404 para `CUSTOMER_NOT_FOUND`).
-- [ ] Retornar um array vazio se não houver leituras.
+- [x] Receber o `customer_code` como parâmetro da URL.
+- [x] Consultar o banco de dados para buscar todas as leituras associadas ao `customer_code`.
+- [x] Retornar as leituras em formato de array com detalhes como `measure_datetime`, `measure_value`, `measure_type`, `measure_uuid` e status de confirmação.
+- [x] Tratar os casos de erros (404 para `CUSTOMER_NOT_FOUND`).
+- [x] Retornar um array vazio se não houver leituras.
 
 ### **Fluxo Geral da Rota GET /<customer_code>/list**:
 1. **Receber o `customer_code`**: Extraído da URL.

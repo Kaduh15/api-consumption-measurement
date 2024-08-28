@@ -13,6 +13,7 @@ import {
   updateImageRoute,
   getImageTempRoute,
   confirmValueRouter,
+  getCustomerMeasureRouter,
 } from '@/routes'
 
 const swaggerPath = path.resolve(__dirname, '../docs/swagger.yaml')
@@ -52,6 +53,7 @@ class App {
     this.app.use('/api', updateImageRoute)
     this.app.use('/api', getImageTempRoute)
     this.app.use('/api', confirmValueRouter)
+    this.app.use('/api', getCustomerMeasureRouter)
 
     this.app.use('*', (req, res) => {
       const url = env.URL_DEPLOY || req.protocol + '://' + req.get('host')
