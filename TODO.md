@@ -149,11 +149,11 @@ Content-Type: application/json
 ```
 
 ### **Checklist da Rota PATCH /confirm**:
-- [ ] Receber o `measure_uuid` e o novo `measure_value` no corpo da requisição.
-- [ ] Validar se o `measure_uuid` existe no sistema.
-- [ ] Validar se o `measure_value` é válido (inteiro, dentro dos limites esperados).
-- [ ] Atualizar o valor da medição e marcar a leitura como confirmada.
-- [ ] Retornar uma resposta de sucesso ou os erros apropriados (404, 400).
+- [x] Receber o `measure_uuid` e o novo `measure_value` no corpo da requisição.
+- [x] Validar se o `measure_uuid` existe no sistema.
+- [x] Validar se o `measure_value` é válido (inteiro, dentro dos limites esperados).
+- [x] Atualizar o valor da medição e marcar a leitura como confirmada.
+- [x] Retornar uma resposta de sucesso ou os erros apropriados (404, 400).
 
 ### **Fluxo Geral da Rota PATCH /confirm**:
 1. **Receber os dados**: `measure_uuid` e `measure_value`.

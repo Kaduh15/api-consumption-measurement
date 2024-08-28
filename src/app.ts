@@ -9,7 +9,11 @@ import 'express-async-errors'
 import { env } from '@/config/env'
 import errorMiddleware from '@/middlewares/error.middleware'
 import loggerMiddleware from '@/middlewares/logger.middleware'
-import { updateImageRoute, getImageTempRoute } from '@/routes'
+import {
+  updateImageRoute,
+  getImageTempRoute,
+  confirmValueRouter,
+} from '@/routes'
 
 const swaggerPath = path.resolve(__dirname, '../docs/swagger.yaml')
 const swaggerDocument = YAML.load(swaggerPath)
@@ -47,6 +51,7 @@ class App {
 
     this.app.use('/api', updateImageRoute)
     this.app.use('/api', getImageTempRoute)
+    this.app.use('/api', confirmValueRouter)
 
     this.app.use('*', (req, res) => {
       const url = env.URL_DEPLOY || req.protocol + '://' + req.get('host')
