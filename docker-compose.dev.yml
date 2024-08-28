@@ -4,7 +4,7 @@ services:
       context: .
       dockerfile: Dockerfile.dev
     container_name: api
-    command: pnpm dev
+    command: sh -c "pnpm run db:generate && pnpm run db:migrate && pnpm run dev"
     ports:
       - 3000:3000
     environment:
@@ -14,9 +14,15 @@ services:
       - DATABASE_URL=${DATABASE_URL:-postgresql://${POSTGRES_USER:-root}:${POSTGRES_PASSWORD:-root}@db:5432/${POSTGRES_DB:-mydb}?schema=public}
     volumes:
       - ./:/app
+    healthcheck:
+      test: [ "CMD", "lsof", "-t", "-i:3000" ]
+      timeout: 10s
+      retries: 5
     networks:
       - api_net
     restart: always
+    depends_on:
+      - db
 
   db:
     image: postgres:latest
@@ -31,6 +37,22 @@ services:
       - ./data:/var/lib/postgresql/data
     networks:
       - api_net
+    restart: unless-stopped
+
+  pgadmin:
+    image: dpage/pgadmin4
+    container_name: pgadmin
+    environment:
+      - PGADMIN_DEFAULT_EMAIL=${PGADMIN_DEFAULT_EMAIL:-pgadmin4@pgadmin.org}
+      - PGADMIN_DEFAULT_PASSWORD=${PGADMIN_DEFAULT_PASSWORD:-admin}
+      - PGADMIN_LISTEN_PORT=5050
+    ports:
+      - 5050:5050
+    networks:
+      - api_net
+    depends_on:
+      - db
+    restart: unless-stopped
 
 networks:
   api_net:

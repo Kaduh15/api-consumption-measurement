@@ -5,7 +5,8 @@
 // Try Prisma Accelerate: https://pris.ly/cli/accelerate-init
 
 generator client {
-  provider = "prisma-client-js"
+  provider      = "prisma-client-js"
+  binaryTargets = ["native", "linux-musl-openssl-3.0.x"]
 }
 
 datasource db {
@@ -19,8 +20,8 @@ model Measure {
   measureDatetime String      @map("measure_datetime")
   measureType     MeasureType @map("measure_type")
   customerCode    String      @map("customer_code")
-  imageBase64     String      @map("image_base64")
   hasConfirmed    Boolean     @default(false) @map("has_confirmed")
+  imageBase64     String      @map("image_base64")
 }
 
 enum MeasureType {
