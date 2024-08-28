@@ -35,7 +35,7 @@ class App {
     )
     this.app.use(
       express.json({
-        limit: '10mb',
+        limit: '50mb',
       }),
     )
     this.app.use(loggerMiddleware)

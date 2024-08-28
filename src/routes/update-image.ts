@@ -1,13 +1,15 @@
 import { Router } from 'express'
 import { z } from 'zod'
 
+import { model } from '@/libs/google-ai'
 import { HttpStatus } from '@/utils/http-status'
+import { parseJsonText } from '@/utils/parse-json-text'
 
 const updateImageRoute: Router = Router()
 
 const bodySchema = z
   .object({
-    image: z.string().base64(),
+    image: z.string().base64('Enter a valid base64 encoded image'),
     customer_code: z.string(),
     measure_datetime: z.coerce.date(),
     measure_type: z.enum(['WATER', 'GAS']),
@@ -19,7 +21,7 @@ const bodySchema = z
     measureType: data.measure_type,
   }))
 
-updateImageRoute.post('/upload', (req, res) => {
+updateImageRoute.post('/upload', async (req, res) => {
   const payload = bodySchema.safeParse(req.body)
 
   if (!payload.success) {
@@ -34,14 +36,39 @@ updateImageRoute.post('/upload', (req, res) => {
     })
   }
 
-  const { customerCode, image, measureDatetime, measureType } = payload.data
+  const { image, measureType } = payload.data
 
-  console.log('customer_code:', customerCode)
-  console.log('image:', image)
-  console.log('measure_datetime:', measureDatetime)
-  console.log('measure_type:', measureType)
+  const data = await analyzeImage(image, measureType)
 
-  res.status(200).json({ message: 'Image uploaded successfully' })
+  if (!data) {
+    return res.status(HttpStatus.BAD_REQUEST).json({
+      error_code: 'INVALID_DATA',
+      error_description: 'Não foi possível analisar a imagem.',
+    })
+  }
+
+  res.status(200).json({ message: 'Image uploaded successfully', data })
 })
+
+async function analyzeImage(image: string, measureType: string) {
+  const result = await model.generateContent([
+    `I want to analyze the ${measureType} consumption meter image, capture the value and return it all to me in a JSON.
+
+    The JSON should be in the following format:
+    {
+      "value": "10"
+    }
+    `,
+    {
+      inlineData: {
+        data: image,
+        mimeType: 'image/jpg',
+      },
+    },
+  ])
+  const data = parseJsonText(result.response.text())
+
+  return data
+}
 
 export { updateImageRoute }
