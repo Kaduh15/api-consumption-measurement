@@ -4,7 +4,7 @@ import { z } from 'zod'
 import { env } from '@/config/env'
 import { model } from '@/libs/google-ai'
 import { db } from '@/libs/prisma'
-import { getStartAndEndDate } from '@/utils/get-start-and-end-date'
+import { getStartAndEndDate } from '@/utils/get-startand-enddate'
 import { HttpStatus } from '@/utils/http-status'
 import { parseJsonText } from '@/utils/parse-json-text'
 
