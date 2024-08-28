@@ -11,6 +11,8 @@ import errorMiddleware from '@/middlewares/error.middleware'
 import loggerMiddleware from '@/middlewares/logger.middleware'
 import { updateImageRoute } from '@/routes'
 
+import { getImageTempRoute } from './routes/get-image-temp'
+
 const swaggerPath = path.resolve(__dirname, '../docs/swagger.yaml')
 const swaggerDocument = YAML.load(swaggerPath)
 
@@ -46,6 +48,7 @@ class App {
     this.app.get('/docs', swaggerUi.setup(swaggerDocument))
 
     this.app.use('/api', updateImageRoute)
+    this.app.use('/api', getImageTempRoute)
 
     this.app.use('*', (req, res) => {
       const url = env.URL_DEPLOY || req.protocol + '://' + req.get('host')

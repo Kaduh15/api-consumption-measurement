@@ -78,10 +78,10 @@ Content-Type: application/json
 ### **Checklist da Rota POST /upload**:
 - [x] Receber a imagem e dados relacionados (customer_code, measure_datetime, measure_type).
 - [x] Validar os dados de entrada.
-- [ ] Verificar se já existe uma leitura para o mês e tipo de leitura.
+- [x] Verificar se já existe uma leitura para o mês e tipo de leitura.
 - [x] Integrar com a API do Google Gemini para extrair o valor numérico.
-- [ ] Retornar a imagem temporária, o valor extraído e o UUID.
-- [ ] Tratar e retornar erros adequados (400, 409).
+- [x] Retornar a imagem temporária, o valor extraído e o UUID.
+- [x] Tratar e retornar erros adequados (400, 409).
 
 Esses passos cobrem todas as responsabilidades da rota `POST /upload`.
 

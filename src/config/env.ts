@@ -8,5 +8,6 @@ export const env = z
       required_error: 'GEMINI_API_KEY is required',
     }),
     URL_DEPLOY: z.string().optional(),
+    DATABASE_URL: z.string().url(),
   })
   .parse(process.env)

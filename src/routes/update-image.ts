@@ -1,7 +1,9 @@
 import { Router } from 'express'
 import { z } from 'zod'
 
+import { env } from '@/config/env'
 import { model } from '@/libs/google-ai'
+import { db } from '@/libs/prisma'
 import { HttpStatus } from '@/utils/http-status'
 import { parseJsonText } from '@/utils/parse-json-text'
 
@@ -17,7 +19,7 @@ const bodySchema = z
   .transform((data) => ({
     image: data.image,
     customerCode: data.customer_code,
-    measureDatetime: data.measure_datetime,
+    measureDatetime: data.measure_datetime.toISOString(),
     measureType: data.measure_type,
   }))
 
@@ -36,7 +38,22 @@ updateImageRoute.post('/upload', async (req, res) => {
     })
   }
 
-  const { image, measureType } = payload.data
+  const { image, measureType, measureDatetime, customerCode } = payload.data
+
+  const hasMeasureInDate = await db.measure.findFirst({
+    where: {
+      measureDatetime,
+      measureType,
+      customerCode,
+    },
+  })
+
+  if (hasMeasureInDate) {
+    return res.status(HttpStatus.CONFLICT).json({
+      error_code: 'DOUBLE_REPORT',
+      error_description: 'Leitura do mês já realizada',
+    })
+  }
 
   const data = await analyzeImage(image, measureType)
 
@@ -47,7 +64,25 @@ updateImageRoute.post('/upload', async (req, res) => {
     })
   }
 
-  res.status(200).json({ message: 'Image uploaded successfully', data })
+  const measureCreated = await db.measure.create({
+    data: {
+      imageBase64: image,
+      measureValue: data.value,
+      measureDatetime,
+      measureType,
+      customerCode,
+    },
+  })
+
+  const imageUrl = `${env.URL_DEPLOY}/api/image/${measureCreated.id}`
+
+  const result = {
+    image_url: imageUrl,
+    measure_value: data.value,
+    measure_uuid: measureCreated.id,
+  }
+
+  res.status(HttpStatus.CREATED).json(result)
 })
 
 async function analyzeImage(image: string, measureType: string) {

@@ -11,11 +11,26 @@ services:
       - PORT=3000
       - GEMINI_API_KEY=${GEMINI_API_KEY}
       - URL_DEPLOY=${URL_DEPLOY:-http://localhost:3000}
+      - DATABASE_URL=${DATABASE_URL:-postgresql://${POSTGRES_USER:-root}:${POSTGRES_PASSWORD:-root}@db:5432/${POSTGRES_DB:-mydb}?schema=public}
     volumes:
       - ./:/app
     networks:
       - api_net
     restart: always
+
+  db:
+    image: postgres:latest
+    container_name: db
+    ports:
+      - 5432:5432/tcp
+    environment:
+      - POSTGRES_USER=${POSTGRES_USER:-root}
+      - POSTGRES_PASSWORD=${POSTGRES_PASSWORD:-root}
+      - POSTGRES_DB=${POSTGRES_DB:-mydb}
+    volumes:
+      - ./data:/var/lib/postgresql/data
+    networks:
+      - api_net
 
 networks:
   api_net:
@@ -23,3 +38,4 @@ networks:
 
 volumes:
   api_volume:
+  db_volume:
