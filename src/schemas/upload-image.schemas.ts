@@ -2,7 +2,7 @@ import z from 'zod'
 
 export const bodySchema = z
   .object({
-    image: z.string().base64('Enter a valid base64 encoded image'),
+    image: z.string().base64(),
     customer_code: z.string(),
     measure_datetime: z.coerce.date(),
     measure_type: z.enum(['WATER', 'GAS']),

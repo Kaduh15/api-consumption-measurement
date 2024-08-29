@@ -6,7 +6,6 @@ import { app } from '@/app'
 import { env } from '@/config/env'
 import { model } from '@/libs/google-ai'
 import { db } from '@/libs/prisma'
-import { bodySchema } from '@/schemas/upload-image.schemas'
 
 const request = supertest(app)
 
@@ -17,21 +16,11 @@ describe('/upload', () => {
 
   it('should record a successful measurement', async () => {
     const bodyRequest = {
-      image: 'base64',
+      image: 'aW1hZ2VCYXNlNjQ=',
       customer_code: 'customerCode',
       measure_type: 'WATER',
       measure_datetime: '2023-01-01T00:00:00.000Z',
     }
-
-    bodySchema.safeParse = Sinon.stub().returns({
-      success: true,
-      data: {
-        image: bodyRequest.image,
-        measureDatetime: new Date(bodyRequest.measure_datetime),
-        measureType: bodyRequest.measure_type,
-        customerCode: bodyRequest.customer_code,
-      },
-    })
 
     db.measure.findFirst = Sinon.stub().resolves(null)
 
@@ -51,7 +40,7 @@ describe('/upload', () => {
       measureType: 'WATER',
     })
 
-    const response = await request.post('/api/upload').send()
+    const response = await request.post('/api/upload').send(bodyRequest)
 
     expect(response.statusCode).toBe(200)
     expect(response.body).toEqual({
@@ -59,5 +48,28 @@ describe('/upload', () => {
       measure_value: 10,
       measure_uuid: 'd9e4dcfe-60b8-4826-a5d7-101ee916e891',
     })
+  })
+
+  it('Should return an error if the request body is invalid', async () => {
+    const bodyRequest = {
+      image: 'aW1hZ2VCYXNlNjQ=',
+      customer_code: 'customerCode',
+      measure_type: 'WATER',
+      measure_datetime: '2023-01-01T00:00:00.000Z',
+    }
+
+    for (const key in bodyRequest) {
+      const response = await request.post('/api/upload').send({
+        ...bodyRequest,
+        [key]: undefined,
+      })
+
+      expect(response.statusCode).toBe(400)
+      expect(response.body).toEqual({
+        error_code: 'INVALID_DATA',
+        error_description:
+          'Os dados fornecidos no corpo da requisição são inválidos.',
+      })
+    }
   })
 })
