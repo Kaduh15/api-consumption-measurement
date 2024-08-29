@@ -89,6 +89,7 @@ async function analyzeImage(image: string, measureType: string) {
       },
     },
   ])
+
   const data = parseJsonText(result.response.text())
 
   return data

@@ -19,7 +19,6 @@ export function parseJsonText(rawText: string): Measurement | null {
 
     return validatedObj
   } catch (error) {
-    console.error('Erro ao parsear ou validar o JSON:', error)
     return null
   }
 }

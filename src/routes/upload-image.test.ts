@@ -72,4 +72,29 @@ describe('/upload', () => {
       })
     }
   })
+
+  it('Should return an error if the image is invalid', async () => {
+    const bodyRequest = {
+      image: 'aW1hZ2VCYXNlNjQ=',
+      customer_code: 'customerCode',
+      measure_type: 'WATER',
+      measure_datetime: '2023-01-01T00:00:00.000Z',
+    }
+
+    db.measure.findFirst = Sinon.stub().resolves(null)
+
+    model.generateContent = Sinon.stub().resolves({
+      response: {
+        text: Sinon.stub().returns('Invalid image'),
+      },
+    })
+
+    const response = await request.post('/api/upload').send(bodyRequest)
+
+    expect(response.statusCode).toBe(400)
+    expect(response.body).toEqual({
+      error_code: 'INVALID_DATA',
+      error_description: 'Não foi possível analisar a imagem.',
+    })
+  })
 })
