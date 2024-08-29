@@ -3,10 +3,7 @@ import z from 'zod'
 export const env = z
   .object({
     PORT: z.coerce.number().default(3000),
-    GEMINI_API_KEY: z.string({
-      description: 'API key do Google Gemini',
-      required_error: 'GEMINI_API_KEY is required',
-    }),
+    GEMINI_API_KEY: z.string(),
     URL_DEPLOY: z.string().default('http://localhost:3000'),
     POSTGRES_USER: z.string(),
     POSTGRES_PASSWORD: z.string(),
