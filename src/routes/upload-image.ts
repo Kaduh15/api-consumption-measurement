@@ -1,41 +1,23 @@
 import { Router } from 'express'
-import { z } from 'zod'
 
 import { env } from '@/config/env'
 import { model } from '@/libs/google-ai'
 import { db } from '@/libs/prisma'
+import { bodySchema } from '@/schemas/upload-image.schemas'
 import { getStartAndEndDate } from '@/utils/get-startand-enddate'
 import { HttpStatus } from '@/utils/http-status'
 import { parseJsonText } from '@/utils/parse-json-text'
 
 const updateImageRoute: Router = Router()
 
-const bodySchema = z
-  .object({
-    image: z.string().base64('Enter a valid base64 encoded image'),
-    customer_code: z.string(),
-    measure_datetime: z.coerce.date(),
-    measure_type: z.enum(['WATER', 'GAS']),
-  })
-  .transform((data) => ({
-    image: data.image,
-    customerCode: data.customer_code,
-    measureDatetime: data.measure_datetime.toISOString(),
-    measureType: data.measure_type,
-  }))
-
 updateImageRoute.post('/upload', async (req, res) => {
   const payload = bodySchema.safeParse(req.body)
 
   if (!payload.success) {
-    const message = payload.error.issues.map(
-      (issue) => `${issue.path[0]}: ${issue.message}`,
-    )[0]
-
     return res.status(HttpStatus.BAD_REQUEST).json({
       error_code: 'INVALID_DATA',
       error_description:
-        message || 'Os dados fornecidos no corpo da requisição são inválidos.',
+        'Os dados fornecidos no corpo da requisição são inválidos.',
     })
   }
 
@@ -88,7 +70,7 @@ updateImageRoute.post('/upload', async (req, res) => {
     measure_uuid: measureCreated.id,
   }
 
-  res.status(HttpStatus.CREATED).json(result)
+  res.status(HttpStatus.OK).json(result)
 })
 
 async function analyzeImage(image: string, measureType: string) {
@@ -107,6 +89,7 @@ async function analyzeImage(image: string, measureType: string) {
       },
     },
   ])
+
   const data = parseJsonText(result.response.text())
 
   return data

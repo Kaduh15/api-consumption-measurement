@@ -20,14 +20,10 @@ confirmValueRouter.patch('/confirm', async (req, res) => {
   const payload = bodySchema.safeParse(req.body)
 
   if (!payload.success) {
-    const message = payload.error.issues.map(
-      (issue) => `${issue.path[0]}: ${issue.message}`,
-    )[0]
-
     return res.status(HttpStatus.BAD_REQUEST).json({
       error_code: 'INVALID_DATA',
       error_description:
-        message || 'Os dados fornecidos no corpo da requisição são inválidos.',
+        'Os dados fornecidos no corpo da requisição são inválidos.',
     })
   }
 
@@ -47,7 +43,7 @@ confirmValueRouter.patch('/confirm', async (req, res) => {
   }
 
   if (measure.hasConfirmed) {
-    return res.status(HttpStatus.BAD_REQUEST).json({
+    return res.status(HttpStatus.CONFLICT).json({
       error_code: 'CONFIRMATION_DUPLICATE',
       error_description: 'Leitura do mês já realizada',
     })

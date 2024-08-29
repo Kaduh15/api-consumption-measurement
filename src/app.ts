@@ -8,7 +8,6 @@ import 'express-async-errors'
 
 import { env } from '@/config/env'
 import errorMiddleware from '@/middlewares/error.middleware'
-import loggerMiddleware from '@/middlewares/logger.middleware'
 import {
   updateImageRoute,
   getImageTempRoute,
@@ -43,7 +42,7 @@ class App {
         limit: '50mb',
       }),
     )
-    this.app.use(loggerMiddleware)
+    // this.app.use(loggerMiddleware)
     this.app.use('/docs', swaggerUi.serve, swaggerUi.setup(swaggerDocument))
   }
 
