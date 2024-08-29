@@ -97,4 +97,24 @@ describe('/upload', () => {
       error_description: 'Não foi possível analisar a imagem.',
     })
   })
+
+  it('should return one if there is already a measurement in the same month', async () => {
+    const bodyRequest = {
+      image: 'aW1hZ2VCYXNlNjQ=',
+      customer_code: 'customerCode',
+      measure_type: 'WATER',
+      measure_datetime: '2023-01-01T00:00:00.000Z',
+    }
+
+    db.measure.findFirst = Sinon.stub().resolves({
+      id: 'd9e4dcfe-60b8-4826-a5d7-101ee916e891',
+    })
+
+    const response = await request.post('/api/upload').send(bodyRequest)
+    expect(response.statusCode).toBe(409)
+    expect(response.body).toEqual({
+      error_code: 'DOUBLE_REPORT',
+      error_description: 'Leitura do mês já realizada',
+    })
+  })
 })
