@@ -10,15 +10,6 @@ COPY src ./src
 
 RUN npm run build
 
-FROM node:20-alpine as production
+RUN npm run db:migrate && npm run db:generate
 
-WORKDIR /app
-
-COPY --from=build /app/dist ./dist
-COPY --from=build /app/package.json ./package.json
-
-COPY /docs ./docs
-
-RUN npm install --omit=dev
-
-CMD ["node", "dist/server.js"]
+CMD [ "npm", "run", "start" ]
