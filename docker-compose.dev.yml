@@ -28,11 +28,12 @@ services:
     image: postgres:latest
     container_name: db
     ports:
-      - 5432:5432/tcp
+      - 5432:${POSTGRES_PORT:-5432}/tcp
     environment:
       - POSTGRES_USER=${POSTGRES_USER:-root}
       - POSTGRES_PASSWORD=${POSTGRES_PASSWORD:-root}
       - POSTGRES_DB=${POSTGRES_DB:-mydb}
+      - POSTGRES_PORT=${POSTGRES_PORT:-5432}
     volumes:
       - ./data:/var/lib/postgresql/data
     networks:

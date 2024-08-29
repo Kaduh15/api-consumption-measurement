@@ -27,7 +27,6 @@ A aplicação pode ser configurada através de variáveis de ambiente definidas 
 
 - **`PORT`**: Define a porta onde a API será executada (padrão: `3000`).
 - **`GEMINI_API_KEY`**: Chave da API do Google Gemini para realizar as leituras das imagens dos medidores.
-- **`DATABASE_URL`**: URL de conexão com o banco de dados PostgreSQL.
 
 ### 📦 Variáveis para Configurar o Banco de Dados
 
