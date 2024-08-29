@@ -49,4 +49,23 @@ describe('/confirm', async () => {
       error_description: 'Leitura do mês não encontrada',
     })
   })
+
+  it('should return one if the "measure_uuid" has already been confirmed', async () => {
+    const bodyRequest = {
+      confirmed_value: 0,
+      measure_uuid: 'd9e4dcfe-60b8-4826-a5d7-101ee916e891',
+    }
+
+    db.measure.findUnique = Sinon.stub().resolves({
+      hasConfirmed: true,
+    })
+
+    const response = await request.patch('/api/confirm').send(bodyRequest)
+
+    expect(response.statusCode).toBe(409)
+    expect(response.body).toEqual({
+      error_code: 'CONFIRMATION_DUPLICATE',
+      error_description: 'Leitura do mês já realizada',
+    })
+  })
 })

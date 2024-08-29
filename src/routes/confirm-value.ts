@@ -43,7 +43,7 @@ confirmValueRouter.patch('/confirm', async (req, res) => {
   }
 
   if (measure.hasConfirmed) {
-    return res.status(HttpStatus.BAD_REQUEST).json({
+    return res.status(HttpStatus.CONFLICT).json({
       error_code: 'CONFIRMATION_DUPLICATE',
       error_description: 'Leitura do mês já realizada',
     })
