@@ -1,16 +1,15 @@
-FROM node:20-alpine as build
+FROM node:20-alpine
 
 WORKDIR /app
 
-COPY package.json tsconfig.json ./
+RUN npm install -g pnpm@latest
 
-RUN npm install --omit=prod
+COPY package.json  pnpm-lock.yaml tsconfig.json ./
 
-COPY src ./src
-COPY prisma ./prisma
+RUN pnpm install --frozen-lockfile
 
-RUN npm run build
+COPY . .
 
-RUN npm run db:migrate && npm run db:generate
+RUN pnpm build
 
-CMD [ "npm", "run", "start" ]
+CMD ["pnpm", "dev"]
