@@ -1,8 +1,8 @@
-# API de Medição de Consumo
+# 🌊⚡ API de Medição de Consumo
 
 Este projeto é uma API de backend para gerenciar a leitura individualizada de consumo de água e gás. Utiliza a API do Google Gemini para realizar a leitura de medidores a partir de imagens, retornando os valores das medições. A aplicação está dockerizada e integra PostgreSQL como banco de dados, Prisma como ORM, e está documentada via Swagger.
 
-## Tecnologias Utilizadas
+## 🛠️ Tecnologias Utilizadas
 
 - **Node.js** e **TypeScript**
 - **Express**
@@ -12,49 +12,39 @@ Este projeto é uma API de backend para gerenciar a leitura individualizada de c
 - **Docker** e **Docker Compose** para gerenciamento de containers
 - **Swagger** para documentação de API
 
-## Instalação e Execução
+## 🚀 Instalação e Execução
 
 ### Pré-requisitos
 
 - **Node.js** e **pnpm** (ou outro gerenciador de pacotes como npm ou yarn)
 - **Docker** e **Docker Compose**
 
-## Variáveis de Ambiente
+## 🔑 Variáveis de Ambiente
 
 A aplicação pode ser configurada através de variáveis de ambiente definidas em um arquivo `.env` na raiz do projeto. Essas variáveis controlam o comportamento da aplicação e a conexão com serviços externos.
 
-### Variáveis Principais
+### 🔧 Variáveis Principais
 
 - **`PORT`**: Define a porta onde a API será executada (padrão: `3000`).
-  
 - **`GEMINI_API_KEY`**: Chave da API do Google Gemini para realizar as leituras das imagens dos medidores.
+- **`DATABASE_URL`**: URL de conexão com o banco de dados PostgreSQL.
 
-- **`DATABASE_URL`**: URL de conexão com o banco de dados PostgreSQL no formato:
-  ```
-  postgresql://{POSTGRES_USER}:{POSTGRES_PASSWORD}@{POSTGRES_HOST}:{POSTGRES_PORT}/{POSTGRES_DB}?schema=public
-  ```
-
-### Variáveis para Configurar o Banco de Dados
+### 📦 Variáveis para Configurar o Banco de Dados
 
 - **`POSTGRES_USER`**: Usuário do banco de dados PostgreSQL (padrão: `root`).
-  
 - **`POSTGRES_PASSWORD`**: Senha do banco de dados PostgreSQL (padrão: `root`).
-  
 - **`POSTGRES_DB`**: Nome do banco de dados PostgreSQL (padrão: `mydb`).
-  
 - **`POSTGRES_HOST`**: Host do banco de dados PostgreSQL.
-  - **`db`**: Deve ser configurado como `db` para que a API possa se comunicar com o container do banco de dados no Docker.
-  - **`localhost`**: Caso esteja executando comandos localmente fora do container da API.
-
+  - **`db`**: Configurado para Docker.
+  - **`localhost`**: Para execução local.
 - **`POSTGRES_PORT`**: Porta do banco de dados PostgreSQL (padrão: `5432`).
 
-### Variáveis para o pgAdmin
+### 📧 Variáveis para o pgAdmin
 
 - **`PGADMIN_DEFAULT_EMAIL`**: E-mail de login do pgAdmin (padrão: `pgadmin4@pgadmin.org`).
-
 - **`PGADMIN_DEFAULT_PASSWORD`**: Senha de login do pgAdmin (padrão: `admin`).
 
-### Variáveis para o Deploy
+### 🌐 Variáveis para o Deploy
 
 - **`URL_DEPLOY`**: URL onde a aplicação será implantada (padrão: `http://localhost:3000`).
 
@@ -73,34 +63,33 @@ PGADMIN_DEFAULT_PASSWORD=admin
 URL_DEPLOY=http://localhost:3000
 ```
 
-> **Nota**: Se você estiver executando comandos fora do container da API, como migrações ou seeds, lembre-se de alterar a variável `POSTGRES_HOST` de `db` para `localhost` para garantir a comunicação adequada com o banco de dados.
+> **Nota**: Se você estiver executando comandos fora do container da API, lembre-se de alterar a variável `POSTGRES_HOST` de `db` para `localhost`.
 
-### Clonando o Repositório
+## 📥 Clonando o Repositório
 
 ```bash
 git clone https://github.com/Kaduh15/api-consumption-measurement.git
 cd api-consumption-measurement
 ```
 
-### Executando com Docker
+## 🐳 Executando com Docker
 
 1. Execute o comando para subir os containers:
-
-   - Em produção:
-   ```bash
-   pnpm compose:up
-   ```
-   - Em desenvolvimento:
-   ```bash
-   pnpm compose:up:dev
-   ```
+   - **Em produção**:
+     ```bash
+     pnpm compose:up
+     ```
+   - **Em desenvolvimento**:
+     ```bash
+     pnpm compose:up:dev
+     ```
 
 2. Isso irá criar e iniciar três containers:
-   - API (porta: 3000)
-   - Banco de Dados PostgreSQL (porta: 5432)
-   - pgAdmin para gerenciar o banco de dados (porta: 5050)
+   - 🌐 API (porta: 3000)
+   - 🗄️ Banco de Dados PostgreSQL (porta: 5432)
+   - 🔧 pgAdmin para gerenciar o banco de dados (porta: 5050)
 
-### Executando Localmente
+## 💻 Executando Localmente
 
 1. Instale as dependências:
    ```bash
@@ -120,46 +109,43 @@ cd api-consumption-measurement
    pnpm dev
    ```
 
-### Scripts Disponíveis
+## 🔄 Scripts Disponíveis
 
-- `pnpm build`: Compila o código TypeScript.
-- `pnpm dev`: Inicia a aplicação em modo de desenvolvimento.
-- `pnpm dev:env`: Inicia a aplicação em modo de desenvolvimento com variáveis de ambiente customizadas.
-- `pnpm start`: Inicia a aplicação em modo de produção.
-- `pnpm start:env`: Inicia a aplicação em modo de produção com variáveis de ambiente customizadas.
-- `pnpm lint`: Analisa o código usando ESLint.
-- `pnpm db:generate`: Gera o cliente Prisma.
-- `pnpm db:migrate`: Aplica as migrações ao banco de dados.
-- `pnpm db:studio`: Abre o Prisma Studio para gerenciar o banco de dados.
-- `pnpm compose:up`: Sobe os containers com Docker Compose em produção.
-- `pnpm compose:up:dev`: Sobe os containers com Docker Compose em desenvolvimento.
-- `pnpm compose:down`: Fecha os containers com Docker Compose.
-- `pnpm compose:down:dev`: Fecha os containers com Docker Compose em desenvolvimento.
+- `pnpm build`: ⚙️ Compila o código TypeScript.
+- `pnpm dev`: 🛠️ Inicia a aplicação em modo de desenvolvimento.
+- `pnpm dev:env`: 🛠️ Inicia a aplicação em modo de desenvolvimento com variáveis de ambiente customizadas.
+- `pnpm start`: 🚀 Inicia a aplicação em modo de produção.
+- `pnpm start:env`: 🚀 Inicia a aplicação em modo de produção com variáveis de ambiente customizadas.
+- `pnpm lint`: 🔍 Analisa o código usando ESLint.
+- `pnpm db:generate`: 🛠️ Gera o cliente Prisma.
+- `pnpm db:migrate`: 🔄 Aplica as migrações ao banco de dados.
+- `pnpm db:studio`: 📊 Abre o Prisma Studio para gerenciar o banco de dados.
+- `pnpm compose:up`: 🐳 Sobe os containers com Docker Compose em produção.
+- `pnpm compose:up:dev`: 🐳 Sobe os containers com Docker Compose em desenvolvimento.
+- `pnpm compose:down`: ❌ Fecha os containers com Docker Compose.
+- `pnpm compose:down:dev`: ❌ Fecha os containers com Docker Compose em desenvolvimento.
 
-## Solução de Problemas
+## 🛠️ Solução de Problemas
 
-### Erro de Permissão ao Subir o Banco de Dados
+### ❗ Erro de Permissão ao Subir o Banco de Dados
 
 Caso você encontre o seguinte erro ao tentar subir o banco de dados com Docker:
 
 ```
-ERROR [api internal] load build context                                                                  
- => ERROR transferring context: 33.97kB                                                                     
- => [api internal] load build context:
+ERROR [api internal] load build context
+ERROR transferring context: 33.97kB
 failed to solve: error from sender: open .../api-consumption-measurement/data: permission denied
 ```
 
-Isso ocorre devido a permissões insuficientes na pasta `data`, onde o volume do banco de dados está armazenado. Para corrigir esse problema, execute o seguinte comando na raiz do projeto:
+Para corrigir, execute o comando abaixo:
 
 ```bash
 sudo chmod -R 755 "$(pwd)/data"
 ```
 
-Esse comando altera as permissões da pasta `data` para garantir que o Docker tenha acesso para carregar e manipular o volume.
+## 📝 Endpoints
 
-## Endpoints
-
-### POST /upload
+### 🔼 POST /upload
 
 Recebe uma imagem em base64 e retorna o valor lido pela API do Google Gemini.
 
@@ -182,7 +168,7 @@ Recebe uma imagem em base64 e retorna o valor lido pela API do Google Gemini.
 }
 ```
 
-### PATCH /confirm
+### 🔄 PATCH /confirm
 
 Confirma ou corrige o valor lido pela API do Google Gemini.
 
@@ -201,39 +187,14 @@ Confirma ou corrige o valor lido pela API do Google Gemini.
 }
 ```
 
-### GET /{customer_code}/list
+### 📄 GET /{customer_code}/list
 
-Lista todas as medições realizadas por um cliente. Permite filtrar por tipo de medição (`measure_type`) e por data de medição (`measure_datetime`) através de query parameters.
+Lista todas as medições realizadas por um cliente.
 
-**Query Parameters**:
-- `measure_type` (opcional): Tipo de medição, pode ser `WATER` ou `GAS`. A validação é **case insensitive**.
-- `measure_datetime` (opcional): Data da medição no formato ISO (YYYY-MM-DD).
-
-**Exemplo de Requisição**:
-```
-GET /{customer_code}/list?measure_type=WATER&measure_datetime=2023-08-28
-```
-
-**Response Body**:
-```json
-{
-  "customer_code": "string",
-  "measures": [
-    {
-      "measure_uuid": "string",
-      "measure_datetime": "datetime",
-      "measure_type": "WATER" ou "GAS",
-      "has_confirmed": boolean,
-      "image_url": "string"
-    }
-  ]
-}
-```
-
-## Documentação da API
+## 📚 Documentação da API
 
 A documentação completa da API pode ser encontrada na rota `/docs` quando a aplicação estiver rodando, ou no diretório `docs` na raiz do projeto.
 
-## Contribuindo
+## 🤝 Contribuindo
 
 Sinta-se à vontade para abrir issues ou enviar pull requests. Todas as contribuições são bem-vindas!
