@@ -55,7 +55,9 @@ class App {
     this.app.use('/api', getCustomerMeasureRouter)
 
     this.app.use('*', (req, res) => {
-      const url = env.URL_DEPLOY || req.protocol + '://' + req.get('host')
+      const url =
+        env.URL_DEPLOY ||
+        req.protocol + '://' + req.get('host') + ':' + env.PORT
 
       res.status(404).json({
         message: `Route not found, go to ${url}/docs to see available routes`,
