@@ -14,7 +14,7 @@ describe('/confirm', async () => {
 
   it('Should return an error if the request body is invalid', async () => {
     const bodyRequest = {
-      customer_code: 'customerCode',
+      confirmed_value: 0,
       measure_uuid: 'd9e4dcfe-60b8-4826-a5d7-101ee916e891',
     }
 
@@ -66,6 +66,28 @@ describe('/confirm', async () => {
     expect(response.body).toEqual({
       error_code: 'CONFIRMATION_DUPLICATE',
       error_description: 'Leitura do mês já realizada',
+    })
+  })
+
+  it('Should return success if the "measure_uuid" has been confirmed', async () => {
+    const bodyRequest = {
+      confirmed_value: 0,
+      measure_uuid: 'd9e4dcfe-60b8-4826-a5d7-101ee916e891',
+    }
+
+    db.measure.findUnique = Sinon.stub().resolves({
+      hasConfirmed: false,
+    })
+
+    db.measure.update = Sinon.stub().resolves({
+      hasConfirmed: true,
+    })
+
+    const response = await request.patch('/api/confirm').send(bodyRequest)
+
+    expect(response.statusCode).toBe(200)
+    expect(response.body).toEqual({
+      success: true,
     })
   })
 })

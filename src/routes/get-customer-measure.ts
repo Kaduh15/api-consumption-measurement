@@ -63,21 +63,10 @@ getCustomerMeasureRouter.get('/:customer_code/list', async (req, res) => {
   const payload = paramsSchema.safeParse(req.params)
 
   if (!payload.success) {
-    const message = payload.error.issues.map(
-      (issue) => `${issue.path[0]}: ${issue.message}`,
-    )[0]
-
-    if (payload.error?.issues[0]?.path.includes('measure_type')) {
-      return res.status(HttpStatus.BAD_REQUEST).json({
-        error_code: 'INVALID_TYPE',
-        error_description: 'Tipo de medição não permitida',
-      })
-    }
-
     return res.status(HttpStatus.BAD_REQUEST).json({
       error_code: 'INVALID_DATA',
       error_description:
-        message || 'Os dados fornecidos no corpo da requisição são inválidos.',
+        'Os dados fornecidos no corpo da requisição são inválidos.',
     })
   }
 
@@ -107,27 +96,22 @@ getCustomerMeasureRouter.get('/:customer_code/list', async (req, res) => {
       },
     })
 
+    if (data.length === 0) {
+      return res.status(HttpStatus.NOT_FOUND).json({
+        error_code: 'MEASURES_NOT_FOUND',
+        error_description: 'Nenhuma leitura encontrada',
+      })
+    }
+
     const result = formatResponse(data)
 
     return res.status(HttpStatus.OK).json(result)
   }
 
-  const data = await db.measure.findMany({
-    where: {
-      customerCode,
-    },
+  res.status(HttpStatus.BAD_REQUEST).json({
+    error_code: 'INVALID_TYPE',
+    error_description: 'Tipo de medição não permitida',
   })
-
-  if (data.length === 0) {
-    return res.status(HttpStatus.NOT_FOUND).json({
-      error_code: 'MEASURES_NOT_FOUND',
-      error_description: 'O código do cliente não foi encontrado',
-    })
-  }
-
-  const result = formatResponse(data)
-
-  res.status(HttpStatus.OK).json(result)
 })
 
 const formatResponse = (measures: MeasureDB[]): CustomerMeasure => {
