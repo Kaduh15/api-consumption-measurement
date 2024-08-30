@@ -8,7 +8,7 @@ import { db } from '@/libs/prisma'
 
 const request = supertest(app)
 
-describe('/confirm', async () => {
+describe('/<customerCode>/list', () => {
   beforeEach(() => {
     Sinon.restore()
   })
