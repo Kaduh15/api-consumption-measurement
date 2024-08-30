@@ -99,7 +99,7 @@ getCustomerMeasureRouter.get('/:customer_code/list', async (req, res) => {
     if (data.length === 0) {
       return res.status(HttpStatus.NOT_FOUND).json({
         error_code: 'MEASURES_NOT_FOUND',
-        error_description: 'O código do cliente não foi encontrado',
+        error_description: 'Nenhuma leitura encontrada',
       })
     }
 
