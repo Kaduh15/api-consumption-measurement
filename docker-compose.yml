@@ -1,12 +1,10 @@
 services:
   api:
-    build:
-      context: .
-      dockerfile: Dockerfile.dev
+    build: .
     container_name: api
     command: sh -c "pnpm run db:generate && pnpm run db:migrate && pnpm start"
     ports:
-      - 3000:${PORT:-3000}
+      - 80:${PORT:-3000}
     environment:
       - PORT=${PORT:-3000}
       - GEMINI_API_KEY=${GEMINI_API_KEY}

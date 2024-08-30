@@ -8,7 +8,9 @@ COPY package.json  pnpm-lock.yaml tsconfig.json ./
 
 RUN pnpm install --frozen-lockfile
 
-COPY . .
+COPY ./src ./src
+COPY ./prisma ./prisma
+COPY ./docs ./docs
 
 RUN pnpm build
 
