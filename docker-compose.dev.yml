@@ -6,11 +6,11 @@ services:
     container_name: api
     command: sh -c "pnpm run db:generate && pnpm run db:migrate && pnpm run dev"
     ports:
-      - 3000:${PORT:-3000}
+      - ${PORT:-80}:${PORT:-80}
     environment:
-      - PORT=${PORT:-3000}
+      - PORT=${PORT:-80}
       - GEMINI_API_KEY=${GEMINI_API_KEY}
-      - URL_DEPLOY=${URL_DEPLOY:-http://localhost:3000}
+      - URL_DEPLOY=${URL_DEPLOY:-http://localhost:${PORT:-80}}
       - POSTGRES_USER=${POSTGRES_USER:-root}
       - POSTGRES_PASSWORD=${POSTGRES_PASSWORD:-root}
       - POSTGRES_HOST=${POSTGRES_HOST:-db}
@@ -20,7 +20,7 @@ services:
     volumes:
       - ./src:/app/src
     healthcheck:
-      test: [ "CMD", "lsof", "-t", "-i:3000" ]
+      test: [ "CMD", "lsof", "-t", "-i:80" ]
       timeout: 10s
       retries: 5
     networks:

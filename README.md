@@ -25,7 +25,7 @@ A aplicação pode ser configurada através de variáveis de ambiente definidas 
 
 ### 🔧 Variáveis Principais
 
-- **`PORT`**: Define a porta onde a API será executada (padrão: `3000`).
+- **`PORT`**: Define a porta onde a API será executada (padrão: `80`).
 - **`GEMINI_API_KEY`**: Chave da API do Google Gemini para realizar as leituras das imagens dos medidores.
 
 ### 📦 Variáveis para Configurar o Banco de Dados
@@ -45,12 +45,12 @@ A aplicação pode ser configurada através de variáveis de ambiente definidas 
 
 ### 🌐 Variáveis para o Deploy
 
-- **`URL_DEPLOY`**: URL onde a aplicação será implantada (padrão: `http://localhost:3000`).
+- **`URL_DEPLOY`**: URL onde a aplicação será implantada (padrão: `http://localhost:80`).
 
 ### Exemplo de Arquivo `.env`
 
 ```env
-PORT=3000
+PORT=80
 GEMINI_API_KEY=your_gemini_api_key
 DATABASE_URL=postgresql://root:root@db:5432/mydb?schema=public
 POSTGRES_USER=root
@@ -59,7 +59,7 @@ POSTGRES_DB=mydb
 POSTGRES_HOST=db
 PGADMIN_DEFAULT_EMAIL=pgadmin4@pgadmin.org
 PGADMIN_DEFAULT_PASSWORD=admin
-URL_DEPLOY=http://localhost:3000
+URL_DEPLOY=http://localhost:80
 ```
 
 > **Nota**: Se você estiver executando comandos fora do container da API, lembre-se de alterar a variável `POSTGRES_HOST` de `db` para `localhost`.
@@ -84,7 +84,7 @@ cd api-consumption-measurement
      ```
 
 2. Isso irá criar e iniciar três containers:
-   - 🌐 API (porta: 3000)
+   - 🌐 API (porta: 80)
    - 🗄️ Banco de Dados PostgreSQL (porta: 5432)
    - 🔧 pgAdmin para gerenciar o banco de dados (porta: 5050)
 
