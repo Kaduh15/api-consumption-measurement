@@ -51,3 +51,5 @@ export const updateImageBodySchema = z
     measureDatetime: data.measure_datetime,
     measureType: data.measure_type,
   }))
+
+export type UpdateImageBodySchema = z.infer<typeof updateImageBodySchema>

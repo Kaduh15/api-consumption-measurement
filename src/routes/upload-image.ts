@@ -4,7 +4,10 @@ import { env } from '@/config/env'
 import { model } from '@/libs/google-ai'
 import { db } from '@/libs/prisma'
 import requestValidationMiddleware from '@/middlewares/request-validate.middleware'
-import { updateImageBodySchema } from '@/schemas/upload-image.schemas'
+import {
+  UpdateImageBodySchema,
+  updateImageBodySchema,
+} from '@/schemas/upload-image.schemas'
 import { getStartAndEndDate } from '@/utils/get-startand-enddate'
 import { HttpStatus } from '@/utils/http-status'
 import { parseJsonText } from '@/utils/parse-json-text'
@@ -17,7 +20,8 @@ updateImageRoute.post(
     body: updateImageBodySchema,
   }),
   async (req, res) => {
-    const { image, measureType, measureDatetime, customerCode } = req.body
+    const { image, measureType, measureDatetime, customerCode } =
+      req.body as UpdateImageBodySchema
 
     const { startDate, endDate } = getStartAndEndDate(measureDatetime)
 

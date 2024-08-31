@@ -1,52 +1,18 @@
 import { Router } from 'express'
-import z from 'zod'
 
 import { env } from '@/config/env'
 import { db } from '@/libs/prisma'
 import requestValidationMiddleware from '@/middlewares/request-validate.middleware'
+import {
+  getCustomerMeasureParamsSchema,
+  GetCustomerMeasureParamsSchema,
+  GetCustomerMeasureQuerySchema,
+  getCustomerMeasureQuerySchema,
+} from '@/schemas/get-customer-measure.schema'
 import { getStartAndEndDate } from '@/utils/get-startand-enddate'
 import { HttpStatus } from '@/utils/http-status'
 
 const getCustomerMeasureRouter: Router = Router()
-
-const paramsSchema = z
-  .object({
-    customer_code: z.string({
-      message: 'Insira um código de cliente válido',
-    }),
-  })
-  .transform((data) => ({
-    customerCode: data.customer_code,
-  }))
-
-type paramsSchemaType = z.infer<typeof paramsSchema>
-
-const measureTypes = ['WATER', 'GAS'] as const
-type MeasureType = (typeof measureTypes)[number]
-
-const measureTypeSchema = z
-  .string()
-  .refine(
-    (value) => measureTypes.includes(value.toUpperCase() as MeasureType),
-    {
-      message: 'INVALID_TYPE: Tipo de medição não permitida',
-    },
-  )
-  .transform((value) => value.toUpperCase() as MeasureType)
-
-const querySchema = z
-  .object({
-    measure_type: measureTypeSchema.optional(),
-    measure_datetime: z.coerce.date().optional(),
-  })
-  .transform((data) => {
-    return {
-      measureType: data.measure_type,
-      measureDatetime: data.measure_datetime?.toISOString(),
-    }
-  })
-
-type querySchemaType = z.infer<typeof querySchema>
 
 type MeasureDB = {
   id: string
@@ -75,13 +41,14 @@ type CustomerMeasure = {
 getCustomerMeasureRouter.get(
   '/:customer_code/list',
   requestValidationMiddleware({
-    params: paramsSchema,
-    query: querySchema,
+    params: getCustomerMeasureParamsSchema,
+    query: getCustomerMeasureQuerySchema,
   }),
   async (req, res) => {
-    const { customerCode } = req.params as paramsSchemaType
+    const { customerCode } = req.params as GetCustomerMeasureParamsSchema
 
-    const { measureDatetime, measureType } = req.query as querySchemaType
+    const { measureDatetime, measureType } =
+      req.query as GetCustomerMeasureQuerySchema
 
     let queryDatetime
 
