@@ -1,37 +1,23 @@
 import { Router } from 'express'
-import z from 'zod'
 
 import { db } from '@/libs/prisma'
 import requestValidationMiddleware from '@/middlewares/request-validate.middleware'
+import {
+  confirmValueBodySchema,
+  ConfirmValueBodySchemaType,
+} from '@/schemas/confirm-value.schema'
 import { HttpStatus } from '@/utils/http-status'
 
 const confirmValueRouter: Router = Router()
 
-const bodySchema = z
-  .object({
-    measure_uuid: z
-      .string({
-        message: 'UUID Invalido',
-      })
-      .uuid(),
-    confirmed_value: z.coerce.number({
-      message: 'Insira um valor válido',
-    }),
-  })
-  .transform((data) => ({
-    confirmedValue: data.confirmed_value,
-    measureUUID: data.measure_uuid,
-  }))
-
-type bodySchemaType = z.infer<typeof bodySchema>
-
 confirmValueRouter.patch(
   '/confirm',
   requestValidationMiddleware({
-    body: bodySchema,
+    body: confirmValueBodySchema,
   }),
   async (req, res) => {
-    const { confirmedValue, measureUUID } = req.body as bodySchemaType
+    const { confirmedValue, measureUUID } =
+      req.body as ConfirmValueBodySchemaType
 
     const measure = await db.measure.findUnique({
       where: {
