@@ -10,19 +10,15 @@ export default function errorMiddleware(
   response: Response,
   _next: NextFunction,
 ) {
-  console.log('🚀 ~ error:', error)
   if (error instanceof ZodError) {
-    console.log(error)
-
-    const errors: {
-      [k: string]: string
-    } = {}
-
-    error.issues.forEach((issue) => {
-      errors[issue.path[0]] = issue.message
+    const currentError = error.errors[0]
+    const { errorCode, errorMessage } = extractErrorMessageAndCode(
+      currentError.message,
+    )
+    return response.status(HttpStatus.BAD_REQUEST).json({
+      error_code: errorCode,
+      error_description: errorMessage,
     })
-
-    return response.status(HttpStatus.BAD_REQUEST).json({ errors })
   }
 
   if (error instanceof HttpError) {
@@ -36,7 +32,23 @@ export default function errorMiddleware(
     return
   }
 
-  response.status(HttpStatus.INTERNAL_SERVER_ERROR).send({
+  return response.status(HttpStatus.INTERNAL_SERVER_ERROR).send({
     error: 'Something went wrong',
   })
+}
+
+function extractErrorMessageAndCode(error: string) {
+  const spitedError = error.split(':').map((text) => text.trim())
+
+  if (spitedError.length === 1) {
+    return {
+      errorCode: 'INVALID_DATA',
+      errorMessage: spitedError[0],
+    }
+  }
+
+  return {
+    errorCode: spitedError[0],
+    errorMessage: spitedError[1],
+  }
 }

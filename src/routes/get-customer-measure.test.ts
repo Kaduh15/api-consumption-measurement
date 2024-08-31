@@ -27,6 +27,20 @@ describe('/<customerCode>/list', () => {
     })
   })
 
+  it('Should return success set of "measure type" to upper and lower case', async () => {
+    db.measure.findMany = Sinon.stub().resolves([
+      {
+        id: 'd9e4dcfe-60b8-4826-a5d7-101ee916e891',
+      },
+    ])
+
+    const response = await request.get(
+      '/api/customerCode/list?measure_type=water',
+    )
+
+    expect(response.statusCode).toBe(200)
+  })
+
   it('Should return an error if customerCode is not found', async () => {
     db.measure.findMany = Sinon.stub().resolves([])
 

@@ -58,6 +58,15 @@ describe('/upload', () => {
       measure_datetime: '2023-01-01T00:00:00.000Z',
     }
 
+    const errorsMessages: {
+      [key: string]: string
+    } = {
+      image: 'Insira uma imagem válida',
+      customer_code: 'Insira um código de cliente válido',
+      measure_type: 'Tipo de medição inválido, insira WATER ou GAS',
+      measure_datetime: 'Data inválida, insira uma data válida',
+    }
+
     for (const key in bodyRequest) {
       const response = await request.post('/api/upload').send({
         ...bodyRequest,
@@ -67,8 +76,7 @@ describe('/upload', () => {
       expect(response.statusCode).toBe(400)
       expect(response.body).toEqual({
         error_code: 'INVALID_DATA',
-        error_description:
-          'Os dados fornecidos no corpo da requisição são inválidos.',
+        error_description: errorsMessages[key],
       })
     }
   })
@@ -78,7 +86,7 @@ describe('/upload', () => {
       image: 'aW1hZ2VCYXNlNjQ=',
       customer_code: 'customerCode',
       measure_type: 'WATER',
-      measure_datetime: '2023-01-01T00:00:00.000Z',
+      measure_datetime: '2023-01-01',
     }
 
     db.measure.findFirst = Sinon.stub().resolves(null)

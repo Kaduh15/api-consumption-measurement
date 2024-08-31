@@ -18,6 +18,13 @@ describe('/confirm', async () => {
       measure_uuid: 'd9e4dcfe-60b8-4826-a5d7-101ee916e891',
     }
 
+    const errorsMessages: {
+      [key: string]: string
+    } = {
+      confirmed_value: 'Insira um valor válido',
+      measure_uuid: 'UUID Invalido',
+    }
+
     for (const key in bodyRequest) {
       const response = await request.patch('/api/confirm').send({
         ...bodyRequest,
@@ -27,8 +34,7 @@ describe('/confirm', async () => {
       expect(response.statusCode).toBe(400)
       expect(response.body).toEqual({
         error_code: 'INVALID_DATA',
-        error_description:
-          'Os dados fornecidos no corpo da requisição são inválidos.',
+        error_description: errorsMessages[key],
       })
     }
   })

@@ -3,6 +3,7 @@ import z from 'zod'
 
 import { env } from '@/config/env'
 import { db } from '@/libs/prisma'
+import requestValidationMiddleware from '@/middlewares/request-validate.middleware'
 import { getStartAndEndDate } from '@/utils/get-startand-enddate'
 import { HttpStatus } from '@/utils/http-status'
 
@@ -10,30 +11,42 @@ const getCustomerMeasureRouter: Router = Router()
 
 const paramsSchema = z
   .object({
-    customer_code: z.string(),
+    customer_code: z.string({
+      message: 'Insira um código de cliente válido',
+    }),
   })
   .transform((data) => ({
     customerCode: data.customer_code,
   }))
 
+type paramsSchemaType = z.infer<typeof paramsSchema>
+
+const measureTypes = ['WATER', 'GAS'] as const
+type MeasureType = (typeof measureTypes)[number]
+
+const measureTypeSchema = z
+  .string()
+  .refine(
+    (value) => measureTypes.includes(value.toUpperCase() as MeasureType),
+    {
+      message: 'INVALID_TYPE: Tipo de medição não permitida',
+    },
+  )
+  .transform((value) => value.toUpperCase() as MeasureType)
+
 const querySchema = z
   .object({
-    measure_type: z
-      .enum(['WATER', 'GAS'])
-      .optional()
-      .refine((value) => {
-        if (value) {
-          return ['WATER', 'GAS'].includes(value.toUpperCase())
-        }
-
-        return true
-      }),
+    measure_type: measureTypeSchema.optional(),
     measure_datetime: z.coerce.date().optional(),
   })
-  .transform((data) => ({
-    measureType: data.measure_type,
-    measureDatetime: data.measure_datetime?.toISOString(),
-  }))
+  .transform((data) => {
+    return {
+      measureType: data.measure_type,
+      measureDatetime: data.measure_datetime?.toISOString(),
+    }
+  })
+
+type querySchemaType = z.infer<typeof querySchema>
 
 type MeasureDB = {
   id: string
@@ -59,23 +72,16 @@ type CustomerMeasure = {
   measures: Measure[]
 }
 
-getCustomerMeasureRouter.get('/:customer_code/list', async (req, res) => {
-  const payload = paramsSchema.safeParse(req.params)
+getCustomerMeasureRouter.get(
+  '/:customer_code/list',
+  requestValidationMiddleware({
+    params: paramsSchema,
+    query: querySchema,
+  }),
+  async (req, res) => {
+    const { customerCode } = req.params as paramsSchemaType
 
-  if (!payload.success) {
-    return res.status(HttpStatus.BAD_REQUEST).json({
-      error_code: 'INVALID_DATA',
-      error_description:
-        'Os dados fornecidos no corpo da requisição são inválidos.',
-    })
-  }
-
-  const { customerCode } = payload.data
-
-  const query = querySchema.safeParse(req.query)
-
-  if (query.success) {
-    const { measureDatetime, measureType } = query.data
+    const { measureDatetime, measureType } = req.query as querySchemaType
 
     let queryDatetime
 
@@ -106,13 +112,8 @@ getCustomerMeasureRouter.get('/:customer_code/list', async (req, res) => {
     const result = formatResponse(data)
 
     return res.status(HttpStatus.OK).json(result)
-  }
-
-  res.status(HttpStatus.BAD_REQUEST).json({
-    error_code: 'INVALID_TYPE',
-    error_description: 'Tipo de medição não permitida',
-  })
-})
+  },
+)
 
 const formatResponse = (measures: MeasureDB[]): CustomerMeasure => {
   if (measures.length === 0) {
