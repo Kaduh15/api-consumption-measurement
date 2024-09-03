@@ -5,8 +5,8 @@ info:
   description: API para gerenciar leituras de consumo de água e gás.
   version: 1.0.0
 servers:
-  - url: http://localhost:80/api
-  - url: http://localhost:3000/api
+  - url: http://localhost:80
+  - url: http://localhost:3000
 
 paths:
   /upload:

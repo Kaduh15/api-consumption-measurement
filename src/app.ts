@@ -49,10 +49,10 @@ class App {
   private routes(): void {
     this.app.get('/docs', swaggerUi.setup(swaggerDocument))
 
-    this.app.use('/api', updateImageRoute)
-    this.app.use('/api', getImageTempRoute)
-    this.app.use('/api', confirmValueRouter)
-    this.app.use('/api', getCustomerMeasureRouter)
+    this.app.use(updateImageRoute)
+    this.app.use(getImageTempRoute)
+    this.app.use(confirmValueRouter)
+    this.app.use(getCustomerMeasureRouter)
 
     this.app.use('*', (req, res) => {
       const url =
