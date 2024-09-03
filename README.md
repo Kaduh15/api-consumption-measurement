@@ -19,33 +19,46 @@ Este projeto é uma API de backend para gerenciar a leitura individualizada de c
 - **Node.js** e **pnpm** (ou outro gerenciador de pacotes como npm ou yarn)
 - **Docker** e **Docker Compose**
 
-## 🔑 Variáveis de Ambiente
+## 🌍 Variáveis de Ambiente
 
 A aplicação pode ser configurada através de variáveis de ambiente definidas em um arquivo `.env` na raiz do projeto. Essas variáveis controlam o comportamento da aplicação e a conexão com serviços externos.
 
-### 🔧 Variáveis Principais
+> **Atenção**: A **única variável obrigatória** para a aplicação funcionar corretamente é **`GEMINI_API_KEY`** 🔐. Todas as outras variáveis possuem valores padrão configurados para um ambiente de desenvolvimento simples.
 
-- **`PORT`**: Define a porta onde a API será executada (padrão: `80`).
-- **`GEMINI_API_KEY`**: Chave da API do Google Gemini para realizar as leituras das imagens dos medidores.
+### Principais Variáveis 🌟
 
-### 📦 Variáveis para Configurar o Banco de Dados
+- **`GEMINI_API_KEY`**: Chave da API do Google Gemini para realizar as leituras das imagens dos medidores. **(Obrigatória)** 🔑
+  
+- **`PORT`**: Define a porta onde a API será executada (padrão: `80`) 🔌.
+  
+- **`DATABASE_URL`**: URL de conexão com o banco de dados PostgreSQL no formato:
+  ```
+  postgresql://{POSTGRES_USER}:{POSTGRES_PASSWORD}@{POSTGRES_HOST}:{POSTGRES_PORT}/{POSTGRES_DB}?schema=public
+  ```
+
+### Configuração do Banco de Dados 🗄️
 
 - **`POSTGRES_USER`**: Usuário do banco de dados PostgreSQL (padrão: `root`).
+  
 - **`POSTGRES_PASSWORD`**: Senha do banco de dados PostgreSQL (padrão: `root`).
+  
 - **`POSTGRES_DB`**: Nome do banco de dados PostgreSQL (padrão: `mydb`).
+  
 - **`POSTGRES_HOST`**: Host do banco de dados PostgreSQL.
-  - **`db`**: Configurado para Docker.
-  - **`localhost`**: Para execução local.
+  - **`db`**: Quando a API é executada no Docker 🐳.
+  - **`localhost`**: Quando executado localmente fora do container da API 🖥️.
+
 - **`POSTGRES_PORT`**: Porta do banco de dados PostgreSQL (padrão: `5432`).
 
-### 📧 Variáveis para o pgAdmin
+### Variáveis para o pgAdmin 📊
 
-- **`PGADMIN_DEFAULT_EMAIL`**: E-mail de login do pgAdmin (padrão: `pgadmin4@pgadmin.org`).
-- **`PGADMIN_DEFAULT_PASSWORD`**: Senha de login do pgAdmin (padrão: `admin`).
+- **`PGADMIN_DEFAULT_EMAIL`**: E-mail de login do pgAdmin (padrão: `pgadmin4@pgadmin.org`) 📧.
 
-### 🌐 Variáveis para o Deploy
+- **`PGADMIN_DEFAULT_PASSWORD`**: Senha de login do pgAdmin (padrão: `admin`) 🔒.
 
-- **`URL_DEPLOY`**: URL onde a aplicação será implantada (padrão: `http://localhost:80`).
+### Variáveis para o Deploy 🚀
+
+- **`URL_DEPLOY`**: URL onde a aplicação será implantada (padrão: `http://localhost:80`) 🌐.
 
 ### Exemplo de Arquivo `.env`
 
@@ -62,7 +75,7 @@ PGADMIN_DEFAULT_PASSWORD=admin
 URL_DEPLOY=http://localhost:80
 ```
 
-> **Nota**: Se você estiver executando comandos fora do container da API, lembre-se de alterar a variável `POSTGRES_HOST` de `db` para `localhost`.
+> **Lembre-se**: Se você estiver executando comandos localmente, altere a variável `POSTGRES_HOST` de `db` para `localhost` para garantir a comunicação adequada com o banco de dados.
 
 ## 📥 Clonando o Repositório
 
@@ -110,19 +123,19 @@ cd api-consumption-measurement
 
 ## 🔄 Scripts Disponíveis
 
-- `pnpm build`: ⚙️ Compila o código TypeScript.
-- `pnpm dev`: 🛠️ Inicia a aplicação em modo de desenvolvimento.
-- `pnpm dev:env`: 🛠️ Inicia a aplicação em modo de desenvolvimento com variáveis de ambiente customizadas.
-- `pnpm start`: 🚀 Inicia a aplicação em modo de produção.
-- `pnpm start:env`: 🚀 Inicia a aplicação em modo de produção com variáveis de ambiente customizadas.
-- `pnpm lint`: 🔍 Analisa o código usando ESLint.
-- `pnpm db:generate`: 🛠️ Gera o cliente Prisma.
-- `pnpm db:migrate`: 🔄 Aplica as migrações ao banco de dados.
-- `pnpm db:studio`: 📊 Abre o Prisma Studio para gerenciar o banco de dados.
-- `pnpm compose:up`: 🐳 Sobe os containers com Docker Compose em produção.
-- `pnpm compose:up:dev`: 🐳 Sobe os containers com Docker Compose em desenvolvimento.
-- `pnpm compose:down`: ❌ Fecha os containers com Docker Compose.
-- `pnpm compose:down:dev`: ❌ Fecha os containers com Docker Compose em desenvolvimento.
+- `build`: ⚙️ Compila o código TypeScript.
+- `dev`: 🛠️ Inicia a aplicação em modo de desenvolvimento.
+- `dev:env`: 🛠️ Inicia a aplicação em modo de desenvolvimento com variáveis de ambiente customizadas.
+- `start`: 🚀 Inicia a aplicação em modo de produção.
+- `start:env`: 🚀 Inicia a aplicação em modo de produção com variáveis de ambiente customizadas.
+- `lint`: 🔍 Analisa o código usando ESLint.
+- `db:generate`: 🛠️ Gera o cliente Prisma.
+- `db:migrate`: 🔄 Aplica as migrações ao banco de dados.
+- `db:studio`: 📊 Abre o Prisma Studio para gerenciar o banco de dados.
+- `compose:up`: 🐳 Sobe os containers com Docker Compose em produção.
+- `compose:up:dev`: 🐳 Sobe os containers com Docker Compose em desenvolvimento.
+- `compose:down`: ❌ Fecha os containers com Docker Compose.
+- `compose:down:dev`: ❌ Fecha os containers com Docker Compose em desenvolvimento.
 
 ## 🛠️ Solução de Problemas
 
