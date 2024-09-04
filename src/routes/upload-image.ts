@@ -61,7 +61,7 @@ updateImageRoute.post(
       },
     })
 
-    const imageUrl = `${env.URL_DEPLOY}/api/image/${measureCreated.id}`
+    const imageUrl = `${env.URL_DEPLOY}/image/${measureCreated.id}`
 
     const result = {
       image_url: imageUrl,
